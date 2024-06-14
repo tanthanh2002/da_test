@@ -3,6 +3,7 @@ import plotly.express as px
 import streamlit as st
 import altair as alt
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 
 st.set_page_config(
     page_title="Transaction Performance Dashboard",
@@ -128,6 +129,79 @@ with col[3]:
             ),
         },
     )
+
+col = st.columns((4, 4), gap="medium")
+with col[0]:
+
+    df_age_group = (
+        df[df.Date.dt.month == selected_month]
+        .groupby("Age")["Revenue"]
+        .sum()
+        .reset_index()
+    )
+
+    fig1 = px.bar(
+        df_age_group,
+        x="Age",
+        y="Revenue",
+        title="Revenue by age",
+        labels={"Revenue": "Revenue (VND)"},
+    )
+
+    st.plotly_chart(fig1)
+
+    df_location = (
+        df[df.Date.dt.month == selected_month]
+        .groupby("Location")["Revenue"]
+        .sum()
+        .reset_index()
+    )
+
+    fig = px.bar(
+        df_location,
+        x="Location",
+        y="Revenue",
+        title="Revenue by Location",
+        labels={"Revenue": "Revenue (VND)"},
+    )
+
+    st.plotly_chart(fig)
+
+with col[1]:
+    df_age_group = (
+        df[df.Date.dt.month == selected_month]
+        .groupby("Age")["user_id"]
+        .nunique()
+        .reset_index()
+    )
+
+    fig1 = px.bar(
+        df_age_group,
+        x="Age",
+        y="user_id",
+        title="Number of users by age",
+        labels={"user_id": "Number of Users"},
+    )
+
+    st.plotly_chart(fig1)
+
+    df_location = (
+        df[df.Date.dt.month == selected_month]
+        .groupby("Location")["user_id"]
+        .nunique()
+        .reset_index()
+    )
+
+    fig = px.bar(
+        df_location,
+        x="Location",
+        y="user_id",
+        title="Number of users by Location",
+        labels={"user_id": "Number of Users"},
+    )
+
+    st.plotly_chart(fig)
+
 
 st.markdown("---")
 st.markdown("#### Overview of yearly")
